@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+  <head>
+  <title>Socket.IO sample</title>
+  <script src="./api/config"></script>
+  <script src="/socket.io/socket.io.js"></script> 
+  <script
+        src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+        crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div>Last recieved command: </div><div id="recieved_command"></div>
+    <form action="">
+      <input id="command_input" autocomplete="off" /><button>Send command</button>
+    </form>
+    <script>
+      var connString = config.protocol + config.domain + ':' + config.clientport;
+      console.log("Websocket connection string:", connString, config.wsclientopts);
+      var socket = io.connect(connString, config.wsclientopts);
+
+      $('form').submit(function(){
+        socket.emit('command', $('#command_input').val());
+        $('#command_input').val('');
+        return false;
+      });
+      socket.on('command', function(cmd) {
+        $('#recieved_command').text(cmd);
+      });
+    </script>
+  </body>
+</html>
